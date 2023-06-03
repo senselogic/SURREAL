@@ -830,11 +830,11 @@ long
     PauseDuration;
 string
     DeclarationFileExtention,
-    DeclarationOutputFolderPath,
+    DeclarationFolderPath,
     ImplementationFileExtension,
-    ImplementationOutputFolderPath,
-    InputFolderPath,
-    ScriptFileExtension;
+    ImplementationFolderPath,
+    ScriptFileExtension,
+    ScriptFolderPath;
 FILE[ string ]
     FileMap;
 
@@ -1086,13 +1086,13 @@ void FindFiles(
         old_file.ScriptFileExists = false;
     }
 
-    foreach ( script_folder_entry; dirEntries( InputFolderPath, "*" ~ ScriptFileExtension, SpanMode.depth ) )
+    foreach ( script_folder_entry; dirEntries( ScriptFolderPath, "*" ~ ScriptFileExtension, SpanMode.depth ) )
     {
         if ( script_folder_entry.isFile )
         {
             script_file_path = script_folder_entry.name.GetLogicalPath();
 
-            if ( script_file_path.startsWith( InputFolderPath )
+            if ( script_file_path.startsWith( ScriptFolderPath )
                  && script_file_path.endsWith( ScriptFileExtension ) )
             {
                 file = script_file_path in FileMap;
@@ -1100,13 +1100,13 @@ void FindFiles(
                 if ( file is null )
                 {
                     declaration_file_path
-                        = DeclarationOutputFolderPath
-                          ~ script_file_path[ InputFolderPath.length .. $ - 4 ]
+                        = DeclarationFolderPath
+                          ~ script_file_path[ ScriptFolderPath.length .. $ - 4 ]
                           ~ DeclarationFileExtention;
 
                     implementation_file_path
-                        = ImplementationOutputFolderPath
-                          ~ script_file_path[ InputFolderPath.length .. $ - 4 ]
+                        = ImplementationFolderPath
+                          ~ script_file_path[ ScriptFolderPath.length .. $ - 4 ]
                           ~ ImplementationFileExtension;
 
                     FileMap[ script_file_path ] = new FILE( script_file_path, declaration_file_path, implementation_file_path );
@@ -1247,18 +1247,18 @@ void main(
     if ( argument_array.length == 1
          && argument_array[ 0 ].GetLogicalPath().endsWith( '/' ) )
     {
-        InputFolderPath = argument_array[ 0 ].GetLogicalPath();
-        DeclarationOutputFolderPath = InputFolderPath;
-        ImplementationOutputFolderPath = InputFolderPath;
+        ScriptFolderPath = argument_array[ 0 ].GetLogicalPath();
+        DeclarationFolderPath = ScriptFolderPath;
+        ImplementationFolderPath = ScriptFolderPath;
         WatchFiles();
     }
     else if ( argument_array.length == 2
               && argument_array[ 0 ].GetLogicalPath().endsWith( '/' )
               && argument_array[ 1 ].GetLogicalPath().endsWith( '/' ) )
     {
-        InputFolderPath = argument_array[ 0 ].GetLogicalPath();
-        DeclarationOutputFolderPath = argument_array[ 1 ].GetLogicalPath();
-        ImplementationOutputFolderPath = DeclarationOutputFolderPath;
+        ScriptFolderPath = argument_array[ 0 ].GetLogicalPath();
+        DeclarationFolderPath = argument_array[ 1 ].GetLogicalPath();
+        ImplementationFolderPath = DeclarationFolderPath;
         WatchFiles();
     }
     else if ( argument_array.length == 3
@@ -1266,18 +1266,18 @@ void main(
               && argument_array[ 1 ].GetLogicalPath().endsWith( '/' )
               && argument_array[ 2 ].GetLogicalPath().endsWith( '/' ) )
     {
-        InputFolderPath = argument_array[ 0 ].GetLogicalPath();
-        DeclarationOutputFolderPath = argument_array[ 1 ].GetLogicalPath();
-        ImplementationOutputFolderPath = argument_array[ 2 ].GetLogicalPath();
+        ScriptFolderPath = argument_array[ 0 ].GetLogicalPath();
+        DeclarationFolderPath = argument_array[ 1 ].GetLogicalPath();
+        ImplementationFolderPath = argument_array[ 2 ].GetLogicalPath();
         WatchFiles();
     }
     else
     {
         writeln( "Usage :" );
         writeln( "    surreal [options]" );
-        writeln( "    surreal [options] <INPUT_FOLDER>" );
+        writeln( "    surreal [options] <FOLDER>" );
         writeln( "    surreal [options] <INPUT_FOLDER> <OUTPUT_FOLDER>" );
-        writeln( "    surreal [options] <INPUT_FOLDER> <DECLARATION_OUTPUT_FOLDER> <IMPLEMENTATION_OUTPUT_FOLDER>" );
+        writeln( "    surreal [options] <SCRIPT_FOLDER> <DECLARATION_FOLDER> <IMPLEMENTATION_FOLDER>" );
         writeln( "Options :" );
         writeln( "    --extension <script-extension> <declaration-extension> <implementation-extension>" );
         writeln( "    --create" );

@@ -269,9 +269,9 @@ dmd -m64 surreal.d
 ## Command line
 
 ```
-surreal [options] <INPUT_FOLDER>
+surreal [options] <FOLDER>
 surreal [options] <INPUT_FOLDER> <OUTPUT_FOLDER>
-surreal [options] <INPUT_FOLDER> <DECLARATION_OUTPUT_FOLDER> <IMPLEMENTATION_OUTPUT_FOLDER>
+surreal [options] <SCRIPT_FOLDER> <DECLARATION_FOLDER> <IMPLEMENTATION_FOLDER>
 ```
 
 ### Options
