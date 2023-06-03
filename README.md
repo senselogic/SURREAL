@@ -6,8 +6,8 @@ Unreal C++ code preprocessor.
 
 ## Features
 
-* Generates .h and .cpp files from a single script
-* Automatically watches file modifications for instant recompilation.
+* Generates separate .h and .cpp files from a single script.
+* Monitors files changes for instant recompilation.
 
 ## Sample
 
