@@ -12,7 +12,7 @@ Unreal C++ code preprocessor.
 
 ## Sample
 
-Source file :
+Source file : ALightSwitch.upp
 
 ```cpp
 #pragma once
@@ -115,7 +115,7 @@ class PROJECTNAME_API ALightSwitch :
 };
 ```
 
-Generated files :
+Generated declaration file : ALightSwitch.h
 
 ```cpp
 #pragma once
@@ -186,6 +186,8 @@ class PROJECTNAME_API ALightSwitch :
     float DesiredIntensity;
 };
 ```
+
+Generated implementation file : ALightSwitch.cpp
 
 ```cpp
 #include "BasicClasses.h"
