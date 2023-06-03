@@ -821,7 +821,6 @@ class FILE
 // -- VARIABLES
 
 bool
-    CleanOptionIsEnabled,
     CreateOptionIsEnabled,
     WatchOptionIsEnabled;
 long
@@ -1166,7 +1165,6 @@ void main(
     ScriptFileExtension = ".upp";
     DeclarationFileExtention = ".h";
     ImplementationFileExtension = ".cpp";
-    CleanOptionIsEnabled = false;
     CreateOptionIsEnabled = false;
     WatchOptionIsEnabled = false;
     PauseDuration = 500;
@@ -1189,10 +1187,6 @@ void main(
             ImplementationFileExtension = argument_array[ 2 ];
 
             argument_array = argument_array[ 3 .. $ ];
-        }
-        else if ( option == "--clean" )
-        {
-            CleanOptionIsEnabled = true;
         }
         else if ( option == "--create" )
         {
