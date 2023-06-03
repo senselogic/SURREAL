@@ -267,13 +267,15 @@ dmd -m64 surreal.d
 ## Command line
 
 ```
-surreal [options] <UPP_FOLDER> <H_FOLDER> <CPP_FOLDER>
+surreal [options] <INPUT_FOLDER>
+surreal [options] <INPUT_FOLDER> <OUTPUT_FOLDER>
+surreal [options] <INPUT_FOLDER> <DECLARATION_OUTPUT_FOLDER> <IMPLEMENTATION_OUTPUT_FOLDER>
 ```
 
 ### Options
 
 ```
---clean : remove unneeded empty lines
+--extension <script-extension> <declaration-extension> <implementation-extension> : define file extensions
 --create : create the output folders if needed
 --watch : watch the script files for modifications
 --pause 500 : time to wait before checking the script files again

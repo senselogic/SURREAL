@@ -1259,12 +1259,11 @@ void main(
         writeln( "    surreal [options] <INPUT_FOLDER> <DECLARATION_OUTPUT_FOLDER> <IMPLEMENTATION_OUTPUT_FOLDER>" );
         writeln( "Options :" );
         writeln( "    --extension <script-extension> <declaration-extension> <implementation-extension>" );
-        writeln( "    --trim" );
         writeln( "    --create" );
         writeln( "    --watch" );
         writeln( "    --pause 500" );
         writeln( "Examples :" );
-        writeln( "    surreal --extension .upp .h .cpp --trim --create UPP/ H/ CPP/" );
+        writeln( "    surreal --extension .upp .h .cpp --create UPP/ H/ CPP/" );
 
         PrintError( "Invalid arguments : " ~ argument_array.to!string() );
     }
