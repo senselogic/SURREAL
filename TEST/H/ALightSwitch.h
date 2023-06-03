@@ -63,5 +63,6 @@ class PROJECTNAME_API ALightSwitch :
         );
 
     UPROPERTY(VisibleAnywhere, Category = "Switch Variables")
-    float DesiredIntensity;
+    float
+        DesiredIntensity;
 };

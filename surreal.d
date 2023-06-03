@@ -802,9 +802,12 @@ class FILE
             code;
 
         if ( Exists
-             && ( !DeclarationFilePath.exists()
-                  || !modification_time_is_used
-                  || ScriptFilePath.timeLastModified() > DeclarationFilePath.timeLastModified() ) )
+             && ScriptFilePath.exists()
+             && ( !modification_time_is_used
+                  || !DeclarationFilePath.exists()
+                  || ScriptFilePath.timeLastModified() > DeclarationFilePath.timeLastModified()
+                  || !ImplementationFilePath.exists()
+                  || ScriptFilePath.timeLastModified() > ImplementationFilePath.timeLastModified() ) )
         {
             text = ReadScriptFile();
 
@@ -1142,9 +1145,9 @@ void WatchFiles(
 
         while ( true )
         {
-            Thread.sleep( dur!( "msecs" )( PauseDuration ) );
-
             ProcessFiles( true );
+
+            Thread.sleep( dur!( "msecs" )( PauseDuration ) );
         }
     }
 }
