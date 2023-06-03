@@ -1209,12 +1209,8 @@ void main(
         }
     }
 
-    if ( argument_array.length == 0 )
-    {
-        WatchFiles();
-    }
-    else if ( argument_array.length == 1
-              && argument_array[ 0 ].GetLogicalPath().endsWith( '/' ) )
+    if ( argument_array.length == 1
+         && argument_array[ 0 ].GetLogicalPath().endsWith( '/' ) )
     {
         InputFolderPath = argument_array[ 0 ].GetLogicalPath();
         DeclarationOutputFolderPath = argument_array[ 0 ].GetLogicalPath();
