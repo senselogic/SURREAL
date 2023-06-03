@@ -11,17 +11,6 @@ Unreal C++ code preprocessor.
 
 ## Sample
 
-```cpp
-```
-
-## Syntax
-
-* `@` : Unreal struct/class/method/attribute properties
-* '::method(' : implementation file method
-* `::` ... `::` : implementation file code
-
-## Sample
-
 Source file :
 
 ```cpp
@@ -253,6 +242,12 @@ void ALightSwitch::ToggleLight(
     PointLightComponent->ToggleVisibility();
 }
 ```
+
+## Syntax
+
+* `@` : Unreal struct/class/method/attribute properties
+* '::method(' : implementation file method
+* `::` ... `::` : implementation file code
 
 ## Limitations
 
