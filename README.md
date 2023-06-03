@@ -251,7 +251,7 @@ void ALightSwitch::ToggleLight(
 
 ## Limitations
 
-* Requires well indented code with function arguments on separate lines, since the code parsing is performed at the line level, without any tokenization or grammatical checking.
+* Requires well indented code with function arguments on separate lines.
 
 ## Installation
 
