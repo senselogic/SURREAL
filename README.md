@@ -1,4 +1,4 @@
-![](https://github.com/senselogic/UPP/blob/master/LOGO/surreal.png)
+![](https://github.com/senselogic/SURREAL/blob/master/LOGO/surreal.png)
 
 # Surreal
 
