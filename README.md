@@ -248,9 +248,9 @@ void ALightSwitch::ToggleLight(
 
 ## Syntax
 
-* `@` : Unreal struct/class/method/attribute properties
-* `::`...`(` : implementation file method
-* `::` ... `::` : implementation file code
+* `@` : decorators
+* `::`...`(` : implementation method
+* `::` ... `::` : implementation code
 
 ## Limitations
 
