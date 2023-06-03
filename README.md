@@ -6,8 +6,7 @@ Unreal C++ code preprocessor.
 
 ## Features
 
-* Provides a simplified decorator syntax for Unreal properties.
-* Removes the code redundancy between `.h` and `.cpp` files.
+* Eliminates redundant and unnecessary code.
 * Monitors files changes for instant recompilation.
 
 ## Sample
