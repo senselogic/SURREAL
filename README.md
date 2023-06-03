@@ -28,7 +28,7 @@ ALightSwitch.upp
 @ BlueprintType
 struct FLightSwitchConfiguration
 {
-    @ EditAnywhere, BlueprintReadWrite, Category="Switch Components"
+    @ EditAnywhere, BlueprintReadWrite, Category="Switch Variables"
     float
         InitialIntensity;
 
@@ -183,7 +183,8 @@ class PROJECTNAME_API ALightSwitch :
         );
 
     UPROPERTY(VisibleAnywhere, Category = "Switch Variables")
-    float DesiredIntensity;
+    float
+        DesiredIntensity;
 };
 ```
 

@@ -9,7 +9,7 @@ struct FLightSwitchConfiguration
 {
     GENERATED_BODY()
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Switch Components")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Switch Variables")
     float
         InitialIntensity;
 
