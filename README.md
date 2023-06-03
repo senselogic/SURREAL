@@ -7,7 +7,7 @@ Unreal C++ code preprocessor.
 ## Features
 
 * Allows a simplified decorator syntax.
-* Generates separate .h and .cpp files from a single script.
+* Removes code redundancy by generating separate `.h` and `.cpp` files from a single `.upp` file.
 * Monitors files changes for instant recompilation.
 
 ## Sample
