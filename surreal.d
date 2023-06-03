@@ -24,6 +24,7 @@ import core.stdc.stdlib : exit;
 import core.thread;
 import std.array : replicate;
 import std.conv : to;
+import std.datetime : SysTime;
 import std.file : dirEntries, exists, mkdirRecurse, readText, timeLastModified, write, SpanMode;
 import std.stdio : writeln;
 import std.string : endsWith, indexOf, join, lastIndexOf, replace, split, startsWith, strip, stripRight, toUpper;
@@ -746,7 +747,16 @@ class FILE
         DeclarationFilePath,
         ImplementationFilePath;
     bool
-        Exists;
+        ScriptFileExists,
+        DeclarationFileExists,
+        ImplementationFileExists;
+    SysTime
+        ScriptFileModificationTime,
+        DeclarationFileModificationTime,
+        ImplementationFileModificationTime,
+        OldScriptFileModificationTime,
+        OldDeclarationFileModificationTime,
+        OldImplementationFileModificationTime;
 
     // ~~
 
@@ -759,33 +769,14 @@ class FILE
         ScriptFilePath = script_file_path;
         DeclarationFilePath = declaration_file_path;
         ImplementationFilePath = implementation_file_path;
-        Exists = true;
-    }
 
-    // ~~
+        ScriptFileExists = false;
+        DeclarationFileExists = false;
+        ImplementationFileExists = false;
 
-    string ReadScriptFile(
-        )
-    {
-        return ScriptFilePath.ReadText();
-    }
-
-    // ~~
-
-    void WriteDeclarationFile(
-        string declaration_file_text
-        )
-    {
-        return DeclarationFilePath.WriteText( declaration_file_text );
-    }
-
-    // ~~
-
-    void WriteImplementationFile(
-        string implementation_file_text
-        )
-    {
-        return ImplementationFilePath.WriteText( implementation_file_text );
+        ScriptFileModificationTime = SysTime.init;
+        DeclarationFileModificationTime = SysTime.init;
+        ImplementationFileModificationTime = SysTime.init;
     }
 
     // ~~
@@ -801,22 +792,31 @@ class FILE
         CODE
             code;
 
-        if ( Exists
-             && ScriptFilePath.exists()
+        if ( ScriptFileExists
              && ( !modification_time_is_used
-                  || !DeclarationFilePath.exists()
-                  || ScriptFilePath.timeLastModified() > DeclarationFilePath.timeLastModified()
-                  || !ImplementationFilePath.exists()
-                  || ScriptFilePath.timeLastModified() > ImplementationFilePath.timeLastModified() ) )
+                  || !DeclarationFileExists
+                  || !ImplementationFileExists
+                  || ScriptFileModificationTime > DeclarationFileModificationTime
+                  || ScriptFileModificationTime > ImplementationFileModificationTime ) )
         {
-            text = ReadScriptFile();
+            text = ScriptFilePath.ReadText();
 
             code = new CODE();
             code.SetText( text );
             code.Process();
 
-            WriteDeclarationFile( code.GetDeclarationText() );
-            WriteImplementationFile( code.GetImplementationText() );
+            DeclarationFilePath.WriteText(
+                code.GetDeclarationText(),
+                ( ScriptFileModificationTime > DeclarationFileModificationTime )
+                );
+
+            ImplementationFilePath.WriteText(
+                code.GetImplementationText(),
+                ( ScriptFileModificationTime > ImplementationFileModificationTime )
+                );
+
+            OldDeclarationFileModificationTime = DeclarationFileModificationTime;
+            OldImplementationFileModificationTime = ImplementationFileModificationTime;
         }
     }
 }
@@ -1012,15 +1012,14 @@ void CreateFolder(
 
 void WriteText(
     string file_path,
-    string file_text
+    string file_text,
+    bool content_is_ignored
     )
 {
     if ( CreateOptionIsEnabled )
     {
         CreateFolder( file_path.GetFolderPath() );
     }
-
-    writeln( "Writing file : ", file_path );
 
     file_text = file_text.stripRight();
 
@@ -1032,9 +1031,12 @@ void WriteText(
 
     try
     {
-        if ( !file_path.exists()
+        if ( content_is_ignored
+             || !file_path.exists()
              || file_path.readText() != file_text )
         {
+            writeln( "Writing file : ", file_path );
+
             file_path.write( file_text );
         }
     }
@@ -1079,9 +1081,9 @@ void FindFiles(
     FILE *
         file;
 
-    foreach ( ref old_file; FileMap )
+    foreach ( old_file; FileMap )
     {
-        old_file.Exists = false;
+        old_file.ScriptFileExists = false;
     }
 
     foreach ( script_folder_entry; dirEntries( InputFolderPath, "*" ~ ScriptFileExtension, SpanMode.depth ) )
@@ -1093,25 +1095,55 @@ void FindFiles(
             if ( script_file_path.startsWith( InputFolderPath )
                  && script_file_path.endsWith( ScriptFileExtension ) )
             {
-                declaration_file_path
-                    = DeclarationOutputFolderPath
-                      ~ script_file_path[ InputFolderPath.length .. $ - 4 ]
-                      ~ DeclarationFileExtention;
-
-                implementation_file_path
-                    = ImplementationOutputFolderPath
-                      ~ script_file_path[ InputFolderPath.length .. $ - 4 ]
-                      ~ ImplementationFileExtension;
-
                 file = script_file_path in FileMap;
 
                 if ( file is null )
                 {
+                    declaration_file_path
+                        = DeclarationOutputFolderPath
+                          ~ script_file_path[ InputFolderPath.length .. $ - 4 ]
+                          ~ DeclarationFileExtention;
+
+                    implementation_file_path
+                        = ImplementationOutputFolderPath
+                          ~ script_file_path[ InputFolderPath.length .. $ - 4 ]
+                          ~ ImplementationFileExtension;
+
                     FileMap[ script_file_path ] = new FILE( script_file_path, declaration_file_path, implementation_file_path );
+
+                    file = script_file_path in FileMap;
+                }
+
+                file.ScriptFileExists = file.ScriptFilePath.exists();
+                file.DeclarationFileExists = file.DeclarationFilePath.exists();
+                file.ImplementationFileExists = file.ImplementationFilePath.exists();
+
+                if ( file.ScriptFileExists )
+                {
+                    file.ScriptFileModificationTime = file.ScriptFilePath.timeLastModified();
                 }
                 else
                 {
-                    file.Exists = true;
+                    file.ScriptFileModificationTime = SysTime.init;
+                }
+
+                if ( file.DeclarationFileExists )
+                {
+                    file.DeclarationFileModificationTime = file.DeclarationFilePath.timeLastModified();
+                }
+                else
+                {
+                    file.DeclarationFileModificationTime = SysTime.init;
+                }
+
+
+                if ( file.ImplementationFileExists )
+                {
+                    file.ImplementationFileModificationTime = file.ImplementationFilePath.timeLastModified();
+                }
+                else
+                {
+                    file.ImplementationFileModificationTime = SysTime.init;
                 }
             }
         }
@@ -1216,8 +1248,8 @@ void main(
          && argument_array[ 0 ].GetLogicalPath().endsWith( '/' ) )
     {
         InputFolderPath = argument_array[ 0 ].GetLogicalPath();
-        DeclarationOutputFolderPath = argument_array[ 0 ].GetLogicalPath();
-        ImplementationOutputFolderPath = argument_array[ 0 ].GetLogicalPath();
+        DeclarationOutputFolderPath = InputFolderPath;
+        ImplementationOutputFolderPath = InputFolderPath;
         WatchFiles();
     }
     else if ( argument_array.length == 2
@@ -1226,23 +1258,13 @@ void main(
     {
         InputFolderPath = argument_array[ 0 ].GetLogicalPath();
         DeclarationOutputFolderPath = argument_array[ 1 ].GetLogicalPath();
-        ImplementationOutputFolderPath = argument_array[ 1 ].GetLogicalPath();
+        ImplementationOutputFolderPath = DeclarationOutputFolderPath;
         WatchFiles();
     }
     else if ( argument_array.length == 3
               && argument_array[ 0 ].GetLogicalPath().endsWith( '/' )
               && argument_array[ 1 ].GetLogicalPath().endsWith( '/' )
               && argument_array[ 2 ].GetLogicalPath().endsWith( '/' ) )
-    {
-        InputFolderPath = argument_array[ 0 ].GetLogicalPath();
-        DeclarationOutputFolderPath = argument_array[ 1 ].GetLogicalPath();
-        ImplementationOutputFolderPath = argument_array[ 2 ].GetLogicalPath();
-        WatchFiles();
-    }
-
-    if ( InputFolderPath != ""
-         && argument_array[ 1 ].GetLogicalPath().endsWith( '/' )
-         && argument_array[ 2 ].GetLogicalPath().endsWith( '/' ) )
     {
         InputFolderPath = argument_array[ 0 ].GetLogicalPath();
         DeclarationOutputFolderPath = argument_array[ 1 ].GetLogicalPath();

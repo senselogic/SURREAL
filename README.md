@@ -288,7 +288,7 @@ surreal --create UPP/ H/ CPP/
 ```
 
 ```bash
-surreal --clean --create --watch UPP/ H/ CPP/
+surreal --extension .upp .h .cpp --create --watch UPP/ H/ CPP/
 ```
 
 ## Version

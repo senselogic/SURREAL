@@ -12,32 +12,32 @@
 struct FLightSwitchConfiguration
 {
     @ EditAnywhere, BlueprintReadWrite, Category="Switch Components"
-    float 
+    float
         InitialIntensity;
 
-    float 
+    float
         CurrentIntensity;
 
     @
-    UObject* 
+    UObject*
         OwnerObject;
 };
 
 @
-class PROJECTNAME_API ALightSwitch : 
+class PROJECTNAME_API ALightSwitch :
     public AActor
 {
     public:
-    
+
     @ VisibleAnywhere, Category = "Switch Components"
-    class UPointLightComponent* 
+    class UPointLightComponent*
         PointLightComponent;
 
     @ VisibleAnywhere, Category = "Switch Components"
-    class USphereComponent* 
+    class USphereComponent*
         SphereComponent;
 
-    ::ALightSwitch( 
+    ::ALightSwitch(
          )
     {
         DesiredIntensity = 3000.0f;
@@ -55,14 +55,14 @@ class PROJECTNAME_API ALightSwitch :
         SphereComponent->OnComponentEndOverlap.AddDynamic( this, &ALightSwitch::OnOverlapEnd );
     }
 
-    @ 
-    void ::OnOverlapBegin( 
-        class UPrimitiveComponent* overlapped_primitive_component, 
-        class AActor* other_actor, 
-        class UPrimitiveComponent* other_primitive_component, 
-        int32 other_body_index, 
-        bool is_from_sweep, 
-        const FHitResult& sweep_hit_result 
+    @
+    void ::OnOverlapBegin(
+        class UPrimitiveComponent* overlapped_primitive_component,
+        class AActor* other_actor,
+        class UPrimitiveComponent* other_primitive_component,
+        int32 other_body_index,
+        bool is_from_sweep,
+        const FHitResult& sweep_hit_result
         )
     {
         if ( other_actor && ( other_actor != this ) && other_primitive_component )
@@ -71,11 +71,11 @@ class PROJECTNAME_API ALightSwitch :
         }
     }
 
-    @ 
-    void ::OnOverlapEnd( 
-        class UPrimitiveComponent* overlapped_primitive_component = 0, 
-        class AActor* other_actor = 0, 
-        class UPrimitiveComponent* other_primitive_component = 0, 
+    @
+    void ::OnOverlapEnd(
+        class UPrimitiveComponent* overlapped_primitive_component = 0,
+        class AActor* other_actor = 0,
+        class UPrimitiveComponent* other_primitive_component = 0,
         int32 other_body_index = 0
         )
     {
@@ -85,14 +85,14 @@ class PROJECTNAME_API ALightSwitch :
         }
     }
 
-    @ 
+    @
     void ::ToggleLight(
         )
     {
         PointLightComponent->ToggleVisibility();
-    }    
+    }
 
     @ VisibleAnywhere, Category = "Switch Variables"
-    float 
+    float
         DesiredIntensity;
 };
