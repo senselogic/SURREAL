@@ -248,7 +248,7 @@ void ALightSwitch::ToggleLight(
 
 ## Syntax
 
-* `@` : decorators
+* `@` : decorator
 * `::`...`(` : implementation method
 * `::` ... `::` : implementation code
 
