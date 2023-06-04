@@ -700,7 +700,10 @@ class CODE
 
                     method_line.ImplementationSpaceCount = method_line.SpaceCount - 4;
                     method_line.ImplementationText
-                        = method_line.Text.RemovePrefix( "explicit " ).RemovePrefix( "virtual " ).AddTypeName( type_name )
+                        = method_line.Text
+                              .RemovePrefix( "explicit " )
+                              .RemovePrefix( "virtual " )
+                              .AddTypeName( type_name )
                           ~ "\n";
 
                     for ( declaration_line_index = method_line_index + 1;
@@ -733,7 +736,15 @@ class CODE
                         if ( declaration_line_index == opening_brace_line_index - 1 )
                         {
                             declaration_line.DeclarationText
-                                = declaration_line.Text.ReplaceSuffix( ")", ");" ) ~ "\n";
+                                = declaration_line.Text
+                                      .ReplaceSuffix( ")", ");" )
+                                      .ReplaceSuffix( ") override", ") override;" )
+                                  ~ "\n";
+
+                            declaration_line.ImplementationText
+                                = declaration_line.Text
+                                      .ReplaceSuffix( ") override", ")" )
+                                  ~ "\n";
                         }
                     }
 
@@ -1240,8 +1251,15 @@ void main(
         }
     }
 
-    if ( argument_array.length == 1
-         && argument_array[ 0 ].GetLogicalPath().endsWith( '/' ) )
+    if ( argument_array.length == 0 )
+    {
+        ScriptFolderPath = "";
+        DeclarationFolderPath = "";
+        ImplementationFolderPath = "";
+        WatchFiles();
+    }
+    else if ( argument_array.length == 1
+              && argument_array[ 0 ].GetLogicalPath().endsWith( '/' ) )
     {
         ScriptFolderPath = argument_array[ 0 ].GetLogicalPath();
         DeclarationFolderPath = ScriptFolderPath;
@@ -1270,6 +1288,7 @@ void main(
     else
     {
         writeln( "Usage :" );
+        writeln( "    surreal [options]" );
         writeln( "    surreal [options] <FOLDER>" );
         writeln( "    surreal [options] <INPUT_FOLDER> <OUTPUT_FOLDER>" );
         writeln( "    surreal [options] <SCRIPT_FOLDER> <DECLARATION_FOLDER> <IMPLEMENTATION_FOLDER>" );
@@ -1279,7 +1298,10 @@ void main(
         writeln( "    --watch" );
         writeln( "    --pause 500" );
         writeln( "Examples :" );
-        writeln( "    surreal --extension .upp .h .cpp --create UPP/ H/ CPP/" );
+        writeln( "    surreal" );
+        writeln( "    surreal --watch" );
+        writeln( "    surreal --create UPP/ H/ CPP/" );
+        writeln( "    surreal --extension .upp .h .cpp --create --watch UPP/ H/ CPP/" );
 
         PrintError( "Invalid arguments : " ~ argument_array.to!string() );
     }

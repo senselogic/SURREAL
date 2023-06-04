@@ -18,23 +18,23 @@ Unreal C++ code preprocessor.
 
 ## Sample
 
-ALightSwitch.upp :
+LightSwitch.upp :
 
 ```cpp
 #pragma once
 
+#include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "LightSwitch.generated.h"
 
 ::
-#include "BasicClasses.h"
 #include "LightSwitch.h"
 ::
 
 @ BlueprintType
-struct FLightSwitchConfiguration
+struct SURREALPROJECT_API FLightConfiguration
 {
-    @ EditAnywhere, BlueprintReadWrite, Category="Switch Variables"
+    @ EditAnywhere, BlueprintReadWrite, Category="Light Configuration Variables"
     float
         InitialIntensity;
 
@@ -47,7 +47,7 @@ struct FLightSwitchConfiguration
 };
 
 @
-class PROJECTNAME_API ALightSwitch :
+class SURREALPROJECT_API ALightSwitch :
     public AActor
 {
     public:
@@ -63,6 +63,8 @@ class PROJECTNAME_API ALightSwitch :
     ::ALightSwitch(
          )
     {
+        PrimaryActorTick.bCanEverTick = true;
+
         DesiredIntensity = 3000.0f;
 
         PointLightComponent = CreateDefaultSubobject<UPointLightComponent>( TEXT( "PointLightComponent" ) );
@@ -76,6 +78,19 @@ class PROJECTNAME_API ALightSwitch :
 
         SphereComponent->OnComponentBeginOverlap.AddDynamic( this, &ALightSwitch::OnOverlapBegin );
         SphereComponent->OnComponentEndOverlap.AddDynamic( this, &ALightSwitch::OnOverlapEnd );
+    }
+
+    virtual void ::BeginPlay(
+        ) override
+    {
+        Super::BeginPlay();
+    }
+
+    virtual void ::Tick(
+        float delta_time
+        ) override
+    {
+        Super::Tick( delta_time );
     }
 
     @
@@ -124,12 +139,13 @@ class PROJECTNAME_API ALightSwitch :
 ALightSwitch.cpp :
 
 ```cpp
-#include "BasicClasses.h"
 #include "LightSwitch.h"
 
 ALightSwitch::ALightSwitch(
      )
 {
+    PrimaryActorTick.bCanEverTick = true;
+
     DesiredIntensity = 3000.0f;
 
     PointLightComponent = CreateDefaultSubobject<UPointLightComponent>( TEXT( "PointLightComponent" ) );
@@ -143,6 +159,19 @@ ALightSwitch::ALightSwitch(
 
     SphereComponent->OnComponentBeginOverlap.AddDynamic( this, &ALightSwitch::OnOverlapBegin );
     SphereComponent->OnComponentEndOverlap.AddDynamic( this, &ALightSwitch::OnOverlapEnd );
+}
+
+void ALightSwitch::BeginPlay(
+    )
+{
+    Super::BeginPlay();
+}
+
+void ALightSwitch::Tick(
+    float delta_time
+    )
+{
+    Super::Tick( delta_time );
 }
 
 void ALightSwitch::OnOverlapBegin(
@@ -185,15 +214,16 @@ ALightSwitch.h :
 ```cpp
 #pragma once
 
+#include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "LightSwitch.generated.h"
 
 USTRUCT(BlueprintType)
-struct FLightSwitchConfiguration
+struct SURREALPROJECT_API FLightConfiguration
 {
     GENERATED_BODY()
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Switch Variables")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Light Configuration Variables")
     float
         InitialIntensity;
 
@@ -206,7 +236,7 @@ struct FLightSwitchConfiguration
 };
 
 UCLASS()
-class PROJECTNAME_API ALightSwitch :
+class SURREALPROJECT_API ALightSwitch :
     public AActor
 {
     GENERATED_BODY()
@@ -223,6 +253,13 @@ class PROJECTNAME_API ALightSwitch :
 
     ALightSwitch(
          );
+
+    virtual void BeginPlay(
+        ) override;
+
+    virtual void Tick(
+        float delta_time
+        ) override;
 
     UFUNCTION()
     void OnOverlapBegin(
@@ -254,7 +291,7 @@ class PROJECTNAME_API ALightSwitch :
 
 ## Limitations
 
-* Requires well indented code with function arguments on separate lines.
+* Requires well formatted code with function arguments on separate lines, since the textual parsing is purely line-based.
 
 ## Installation
 
@@ -269,6 +306,7 @@ dmd -m64 surreal.d
 ## Command line
 
 ```
+surreal [options]
 surreal [options] <FOLDER>
 surreal [options] <INPUT_FOLDER> <OUTPUT_FOLDER>
 surreal [options] <SCRIPT_FOLDER> <DECLARATION_FOLDER> <IMPLEMENTATION_FOLDER>
@@ -284,6 +322,14 @@ surreal [options] <SCRIPT_FOLDER> <DECLARATION_FOLDER> <IMPLEMENTATION_FOLDER>
 ```
 
 ### Examples
+
+```bash
+surreal
+```
+
+```bash
+surreal --watch
+```
 
 ```bash
 surreal --create UPP/ H/ CPP/

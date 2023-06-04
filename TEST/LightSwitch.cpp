@@ -1,9 +1,10 @@
-#include "BasicClasses.h"
 #include "LightSwitch.h"
 
 ALightSwitch::ALightSwitch(
      )
 {
+    PrimaryActorTick.bCanEverTick = true;
+
     DesiredIntensity = 3000.0f;
 
     PointLightComponent = CreateDefaultSubobject<UPointLightComponent>( TEXT( "PointLightComponent" ) );
@@ -17,6 +18,19 @@ ALightSwitch::ALightSwitch(
 
     SphereComponent->OnComponentBeginOverlap.AddDynamic( this, &ALightSwitch::OnOverlapBegin );
     SphereComponent->OnComponentEndOverlap.AddDynamic( this, &ALightSwitch::OnOverlapEnd );
+}
+
+void ALightSwitch::BeginPlay(
+    )
+{
+    Super::BeginPlay();
+}
+
+void ALightSwitch::Tick(
+    float delta_time
+    )
+{
+    Super::Tick( delta_time );
 }
 
 void ALightSwitch::OnOverlapBegin(

@@ -1,14 +1,15 @@
 #pragma once
 
+#include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "LightSwitch.generated.h"
 
 USTRUCT(BlueprintType)
-struct FLightSwitchConfiguration
+struct SURREALPROJECT_API FLightConfiguration
 {
     GENERATED_BODY()
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Switch Variables")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Light Configuration Variables")
     float
         InitialIntensity;
 
@@ -21,7 +22,7 @@ struct FLightSwitchConfiguration
 };
 
 UCLASS()
-class PROJECTNAME_API ALightSwitch :
+class SURREALPROJECT_API ALightSwitch :
     public AActor
 {
     GENERATED_BODY()
@@ -38,6 +39,13 @@ class PROJECTNAME_API ALightSwitch :
 
     ALightSwitch(
          );
+
+    virtual void BeginPlay(
+        ) override;
+
+    virtual void Tick(
+        float delta_time
+        ) override;
 
     UFUNCTION()
     void OnOverlapBegin(
