@@ -3,7 +3,6 @@
 #include "GameFramework/Actor.h"
 #include "LightSwitch.generated.h"
 
-
 USTRUCT(BlueprintType)
 struct FLightSwitchConfiguration
 {

@@ -266,20 +266,30 @@ class CODE
 
     // ~~
 
-    string GetText(
+    string GetCleanText(
+        string text
         )
     {
         string
-            text;
+            old_text;
 
-        foreach ( line; LineArray )
+        text = text.stripRight();
+
+        if ( text != ""
+             && !text.endsWith( '\n' ) )
         {
-            text ~= line.Text ~ "\n";
+            text ~= '\n';
         }
+
+        do
+        {
+            old_text = text;
+            text = text.replace( "\n\n\n", "\n\n" );
+        }
+        while ( text != old_text );
 
         return text;
     }
-
 
     // ~~
 
@@ -294,7 +304,7 @@ class CODE
             declaration_text ~= line.GetDeclarationText();
         }
 
-        return declaration_text;
+        return GetCleanText( declaration_text );
     }
 
     // ~~
@@ -310,7 +320,7 @@ class CODE
             implementation_text ~= line.GetImplementationText();
         }
 
-        return implementation_text;
+        return GetCleanText( implementation_text );
     }
 
     // ~~
@@ -1043,14 +1053,6 @@ void WriteText(
     if ( CreateOptionIsEnabled )
     {
         CreateFolder( file_path.GetFolderPath() );
-    }
-
-    file_text = file_text.stripRight();
-
-    if ( file_text != ""
-         && !file_text.endsWith( '\n' ) )
-    {
-        file_text ~= '\n';
     }
 
     try
