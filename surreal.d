@@ -346,26 +346,32 @@ class CODE
     // ~~
 
     long FindOpeningBraceIndex(
-        long line_index,
-        long space_count
+        long method_line_index,
+        long method_line_space_count
         )
     {
-        while ( line_index >= 0
-                && line_index < LineArray.length )
+        long
+            line_index;
+        LINE
+            line;
+
+        for ( line_index = method_line_index + 1;
+              line_index >= 0 && line_index < LineArray.length;
+              ++line_index )
         {
-            if ( LineArray[ line_index ].IsOpeningBrace()
-                 && LineArray[ line_index ].SpaceCount == space_count )
+            line = LineArray[ line_index ];
+
+            if ( line.IsOpeningBrace()
+                 && line.SpaceCount == method_line_space_count )
             {
                 return line_index;
             }
 
-            if ( LineArray[ line_index ].SpaceCount < space_count
-                 && LineArray[ line_index ].Text != "" )
+            if ( line.SpaceCount < method_line_space_count
+                 && line.Text != "" )
             {
                 return -1;
             }
-
-            ++line_index;
         }
 
         return -1;
@@ -374,26 +380,32 @@ class CODE
     // ~~
 
     long FindClosingBraceIndex(
-        long line_index,
-        long space_count
+        long opening_brace_line_index,
+        long method_line_space_count
         )
     {
-        while ( line_index >= 0
-                && line_index < LineArray.length )
+        long
+            line_index;
+        LINE
+            line;
+
+        for ( line_index = opening_brace_line_index + 1;
+              line_index >= 0 && line_index < LineArray.length;
+              ++line_index )
         {
-            if ( LineArray[ line_index ].IsClosingBrace()
-                 && LineArray[ line_index ].SpaceCount == space_count )
+            line = LineArray[ line_index ];
+
+            if ( line.IsClosingBrace()
+                 && line.SpaceCount == method_line_space_count )
             {
                 return line_index;
             }
 
-            if ( LineArray[ line_index ].SpaceCount < space_count
-                 && LineArray[ line_index ].Text != "" )
+            if ( line.SpaceCount < method_line_space_count
+                 && line.Text != "" )
             {
                 return -1;
             }
-
-            ++line_index;
         }
 
         return -1;
@@ -402,21 +414,28 @@ class CODE
     // ~~
 
     string FindTypeName(
-        long line_index,
-        long space_count
+        long method_line_index,
+        long method_line_space_count
         )
     {
+        long
+            line_index;
         string[]
             identifier_array;
+        LINE
+            line;
 
-        while ( line_index >= 0
-                && line_index < LineArray.length )
+        for ( line_index = method_line_index - 1;
+              line_index >= 0 && line_index < LineArray.length;
+              --line_index )
         {
-            if ( LineArray[ line_index ].IsType()
-                 && LineArray[ line_index ].SpaceCount < space_count )
+            line = LineArray[ line_index ];
+
+            if ( line.IsType()
+                 && line.SpaceCount == method_line_space_count - 4 )
             {
                 identifier_array
-                    = LineArray[ line_index ].Text
+                    = line.Text
                           .RemovePrefix( "struct " )
                           .RemovePrefix( "class " )
                           .strip()
@@ -435,8 +454,6 @@ class CODE
 
                 return "";
             }
-
-            --line_index;
         }
 
         return "";
