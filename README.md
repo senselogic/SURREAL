@@ -10,6 +10,12 @@ Unreal C++ code preprocessor.
 * Eliminates redundant and superfluous code.
 * Monitors files changes for instant recompilation.
 
+## Syntax
+
+* `@` : decorator
+* `::`...`(` : implementation method
+* `::` ... `::` : implementation code
+
 ## Sample
 
 ALightSwitch.upp
@@ -245,12 +251,6 @@ void ALightSwitch::ToggleLight(
     PointLightComponent->ToggleVisibility();
 }
 ```
-
-## Syntax
-
-* `@` : decorator
-* `::`...`(` : implementation method
-* `::` ... `::` : implementation code
 
 ## Limitations
 
