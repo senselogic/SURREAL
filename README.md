@@ -12,9 +12,9 @@ Unreal C++ code preprocessor.
 
 ## Syntax
 
-* `::` : implementation code
-* `::`...`(` : implementation method
-* `@` : decorator
+* `::` : implementation file code
+* `::`...`(` : implementation file method
+* `@` : Unreal decorator
 
 ## Sample
 
