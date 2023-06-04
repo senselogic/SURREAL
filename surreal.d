@@ -1270,7 +1270,6 @@ void main(
     else
     {
         writeln( "Usage :" );
-        writeln( "    surreal [options]" );
         writeln( "    surreal [options] <FOLDER>" );
         writeln( "    surreal [options] <INPUT_FOLDER> <OUTPUT_FOLDER>" );
         writeln( "    surreal [options] <SCRIPT_FOLDER> <DECLARATION_FOLDER> <IMPLEMENTATION_FOLDER>" );
