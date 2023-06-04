@@ -14,7 +14,7 @@ Unreal C++ code preprocessor.
 
 * `::` : implementation file code
 * `::`...`(` : implementation file method
-* `@` : Unreal decorator
+* `@` : specifiers
 
 ## Sample
 
