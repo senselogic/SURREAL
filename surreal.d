@@ -747,16 +747,11 @@ class FILE
         DeclarationFilePath,
         ImplementationFilePath;
     bool
-        ScriptFileExists,
-        DeclarationFileExists,
-        ImplementationFileExists;
+        ScriptFileExists;
     SysTime
-        ScriptFileModificationTime,
-        DeclarationFileModificationTime,
-        ImplementationFileModificationTime,
-        OldScriptFileModificationTime,
-        OldDeclarationFileModificationTime,
-        OldImplementationFileModificationTime;
+        ScriptFileTime,
+        DeclarationFileTime,
+        ImplementationFileTime;
 
     // ~~
 
@@ -769,14 +764,6 @@ class FILE
         ScriptFilePath = script_file_path;
         DeclarationFilePath = declaration_file_path;
         ImplementationFilePath = implementation_file_path;
-
-        ScriptFileExists = false;
-        DeclarationFileExists = false;
-        ImplementationFileExists = false;
-
-        ScriptFileModificationTime = SysTime.init;
-        DeclarationFileModificationTime = SysTime.init;
-        ImplementationFileModificationTime = SysTime.init;
     }
 
     // ~~
@@ -785,38 +772,58 @@ class FILE
         bool modification_time_is_used
         )
     {
+        bool
+            declaration_file_exists,
+            implementation_file_exists;
         string
             declaration_file_text,
             implementation_file_text,
-            text;
+            script_file_text;
+        SysTime
+            declaration_file_time,
+            implementation_file_time,
+            script_file_time;
         CODE
             code;
 
-        if ( ScriptFileExists
-             && ( !modification_time_is_used
-                  || !DeclarationFileExists
-                  || !ImplementationFileExists
-                  || ScriptFileModificationTime > DeclarationFileModificationTime
-                  || ScriptFileModificationTime > ImplementationFileModificationTime ) )
+        if ( ScriptFileExists )
         {
-            text = ScriptFilePath.ReadText();
+            script_file_time = ScriptFilePath.timeLastModified();
 
-            code = new CODE();
-            code.SetText( text );
-            code.Process();
+            declaration_file_exists = DeclarationFilePath.exists();
 
-            DeclarationFilePath.WriteText(
-                code.GetDeclarationText(),
-                ( ScriptFileModificationTime > DeclarationFileModificationTime )
-                );
+            if ( declaration_file_exists )
+            {
+                declaration_file_time = DeclarationFilePath.timeLastModified();
+            }
 
-            ImplementationFilePath.WriteText(
-                code.GetImplementationText(),
-                ( ScriptFileModificationTime > ImplementationFileModificationTime )
-                );
+            implementation_file_exists = ImplementationFilePath.exists();
 
-            OldDeclarationFileModificationTime = DeclarationFileModificationTime;
-            OldImplementationFileModificationTime = ImplementationFileModificationTime;
+            if ( implementation_file_exists )
+            {
+                implementation_file_time = ImplementationFilePath.timeLastModified();
+            }
+
+            if ( !modification_time_is_used
+                 || !declaration_file_exists
+                 || !implementation_file_exists
+                 || script_file_time != ScriptFileTime
+                 || declaration_file_time != DeclarationFileTime
+                 || implementation_file_time != ImplementationFileTime )
+            {
+                script_file_text = ScriptFilePath.ReadText();
+
+                code = new CODE();
+                code.SetText( script_file_text );
+                code.Process();
+
+                DeclarationFilePath.WriteText( code.GetDeclarationText() );
+                ImplementationFilePath.WriteText( code.GetImplementationText() );
+
+                ScriptFileTime = ScriptFilePath.timeLastModified();
+                DeclarationFileTime = DeclarationFilePath.timeLastModified();
+                ImplementationFileTime = ImplementationFilePath.timeLastModified();
+            }
         }
     }
 }
@@ -1013,7 +1020,7 @@ void CreateFolder(
 void WriteText(
     string file_path,
     string file_text,
-    bool content_is_ignored
+    bool content_is_ignored = false
     )
 {
     if ( CreateOptionIsEnabled )
@@ -1115,36 +1122,6 @@ void FindFiles(
                 }
 
                 file.ScriptFileExists = file.ScriptFilePath.exists();
-                file.DeclarationFileExists = file.DeclarationFilePath.exists();
-                file.ImplementationFileExists = file.ImplementationFilePath.exists();
-
-                if ( file.ScriptFileExists )
-                {
-                    file.ScriptFileModificationTime = file.ScriptFilePath.timeLastModified();
-                }
-                else
-                {
-                    file.ScriptFileModificationTime = SysTime.init;
-                }
-
-                if ( file.DeclarationFileExists )
-                {
-                    file.DeclarationFileModificationTime = file.DeclarationFilePath.timeLastModified();
-                }
-                else
-                {
-                    file.DeclarationFileModificationTime = SysTime.init;
-                }
-
-
-                if ( file.ImplementationFileExists )
-                {
-                    file.ImplementationFileModificationTime = file.ImplementationFilePath.timeLastModified();
-                }
-                else
-                {
-                    file.ImplementationFileModificationTime = SysTime.init;
-                }
             }
         }
     }
