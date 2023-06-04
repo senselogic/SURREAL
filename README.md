@@ -6,7 +6,7 @@ Unreal C++ code preprocessor.
 
 ## Features
 
-* Eliminates redundant and unnecessary code.
+* Eliminates redundant and superfluous code.
 * Monitors files changes for instant recompilation.
 
 ## Sample
