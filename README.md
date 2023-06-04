@@ -18,7 +18,7 @@ Unreal C++ code preprocessor.
 
 ## Sample
 
-Source ALightSwitch.upp :
+ALightSwitch.upp :
 
 ```cpp
 #pragma once
@@ -121,7 +121,7 @@ class PROJECTNAME_API ALightSwitch :
 };
 ```
 
-Generated ALightSwitch.cpp :
+ALightSwitch.cpp :
 
 ```cpp
 #include "BasicClasses.h"
@@ -180,7 +180,7 @@ void ALightSwitch::ToggleLight(
 }
 ```
 
-Generated ALightSwitch.h :
+ALightSwitch.h :
 
 ```cpp
 #pragma once
